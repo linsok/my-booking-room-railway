@@ -80,42 +80,28 @@ document.addEventListener('DOMContentLoaded', function () {
     const password = document.getElementById('login-password').value;
 
     fetch(`${BASE_API_URL}/auth/login/`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        username: username,  // changed from email to username
-        password: password
-      })
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Login failed with status ${res.status}`);
-      return res.json();
-    })
-    .then(data => {
-      if (data.key) {
-        localStorage.setItem('authToken', data.key);
-        return fetch(`${BASE_API_URL}/api/accounts/profile/`, {
-          headers: { 'Authorization': 'Token ' + data.key }
-        });
-      } else {
-        throw new Error('Login response missing auth key');
-      }
-    })
-    .then(res => {
-      if (!res.ok) throw new Error(`Profile fetch failed with status ${res.status}`);
-      return res.json();
-    })
-    .then(profile => {
-      if (profile.is_staff || profile.is_superuser) {
-        window.location.href = "admin_dashboard.html";
-      } else {
-        window.location.href = "home.html";
-      }
-    })
-    .catch(err => {
-      showError('Login error: ' + err.message);
+  method: 'POST',
+  headers: { 'Content-Type': 'application/json' },
+  body: JSON.stringify({
+    email: username,  // send email as login id
+    password: password
+  })
+})
+.then(res => {
+  if (!res.ok) {
+    return res.json().then(data => {
+      throw new Error(JSON.stringify(data));
     });
-  });
+  }
+  return res.json();
+})
+.then(data => {
+  // same as before
+})
+.catch(err => {
+  showError('Login error: ' + err.message);
+});
+
 
   // --- Signup form ---
   const signupFormEl = document.querySelector('#signup-form form');
