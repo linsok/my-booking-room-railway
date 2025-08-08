@@ -114,9 +114,9 @@ document.addEventListener('DOMContentLoaded', function () {
   })
   .then(profile => {
     if (profile.is_staff || profile.is_superuser) {
-      window.location.href = "admin_dashboard.html";
+      window.location.href = "frontend/admin_dashboard.html";
     } else {
-      window.location.href = "home.html";
+      window.location.href = "frontend/home.html";
     }
   })
   .catch(err => {
