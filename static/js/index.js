@@ -60,78 +60,48 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
 });
 
 // Signup form submit
-document.getElementById('signup-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const name = document.getElementById('signup-username').value;
-    const email = document.getElementById('signup-email').value;
-    const password = document.getElementById('signup-password').value;
-    const confirmPassword = document.getElementById('signup-password2').value;
-    const phone = document.getElementById('phone').value;
+const username = document.getElementById('signup-username').value;
+const email = document.getElementById('signup-email').value;
+const password = document.getElementById('signup-password').value;
+const confirmPassword = document.getElementById('signup-password2').value;
 
-    if (password !== confirmPassword) {
-        alert('Passwords do not match');
+if (password !== confirmPassword) {
+    alert('Passwords do not match');
+    return;
+}
+
+try {
+    const response = await fetch('https://my-booking-room-railway-production.up.railway.app/auth/registration/', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'X-CSRFToken': csrftoken
+        },
+        body: JSON.stringify({
+            username,      // send username properly
+            email,
+            password1: password,
+            password2: confirmPassword
+        })
+    });
+
+    if (!response.ok) {
+        const errorData = await response.json();
+        console.error('Signup error:', errorData);
+        alert('Signup failed: ' + JSON.stringify(errorData));
         return;
     }
 
-    try {
-        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/auth/registration/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({
-                username: email,
-                email,
-                password1: password,
-                password2: confirmPassword,
-                phone,
-                name
-            })
-        });
+    const data = await response.json();
+    alert('Signup successful');
+    document.getElementById('signup-form').reset();
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
+} catch (error) {
+    console.error('Signup error:', error);
+    alert('Signup failed');
+}
 
-        if (!response.ok) {
-            throw new Error('Signup failed');
-        }
-
-        const data = await response.json();
-        alert('Signup successful');
-        document.getElementById('signup-form').reset();
-        document.getElementById('signup-form').classList.add('hidden');
-        document.getElementById('login-form').classList.remove('hidden');
-    } catch (error) {
-        console.error('Signup error:', error);
-        alert('Signup failed');
-    }
-});
-
-// Forgot Password Step 1
-document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
-    e.preventDefault();
-    const email = document.getElementById('reset-contact').value;
-
-    try {
-        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/api/password_reset/', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-CSRFToken': csrftoken
-            },
-            body: JSON.stringify({ email })
-        });
-
-        if (!response.ok) {
-            throw new Error('Request failed');
-        }
-
-        alert('Reset code sent to email');
-        document.getElementById('forgot-password-form').classList.add('hidden');
-        document.getElementById('reset-code-container').classList.remove('hidden');
-    } catch (error) {
-        console.error('Reset request error:', error);
-        alert('Error sending reset code');
-    }
-});
 
 // Forgot Password Step 2 (Verify code)
 document.getElementById('reset-code-form').addEventListener('submit', async (e) => {
