@@ -32,9 +32,9 @@ urlpatterns = [
     #path('auth/custom/', include('authentication.urls')),  # Changed to avoid conflict
 
     # API endpoints
-    #path('api/accounts/', include('accounts.urls')),        # Changed prefix to avoid conflict
+    path('api/accounts/', include('accounts.urls')),        # Changed prefix to avoid conflict
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    path('api/', include('api.urls')),
+    #path('api/', include('api.urls')),
     # Frontend HTML files
     path('frontend/home.html', TemplateView.as_view(template_name='home.html'), name='home'),
     path('frontend/index.html', TemplateView.as_view(template_name='index.html'), name='index'),
