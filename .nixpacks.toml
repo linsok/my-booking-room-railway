@@ -1,0 +1,8 @@
+[phases.setup]
+commands = ["pip install -r requirements.txt"]
+
+[phases.build]
+commands = ["python manage.py collectstatic --noinput"]
+
+[phases.start]
+commands = ["gunicorn config.wsgi:application"]
