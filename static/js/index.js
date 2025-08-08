@@ -37,7 +37,7 @@ document.getElementById('login-form').addEventListener('submit', async (e) => {
     const password = document.getElementById('login-password').value;
 
     try {
-        const response = await fetch('/auth/login/', {
+        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/auth/login/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -74,7 +74,7 @@ document.getElementById('signup-form').addEventListener('submit', async (e) => {
     }
 
     try {
-        const response = await fetch('/auth/registration/', {
+        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/auth/registration/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -111,7 +111,7 @@ document.getElementById('forgot-password-form').addEventListener('submit', async
     const email = document.getElementById('reset-contact').value;
 
     try {
-        const response = await fetch('/api/password_reset/', {
+        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/api/password_reset/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -139,7 +139,7 @@ document.getElementById('reset-code-form').addEventListener('submit', async (e) 
     const code = document.getElementById('reset-code-input').value;
 
     try {
-        const response = await fetch('/api/password_reset/validate_token/', {
+        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/api/password_reset/validate_token/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -179,7 +179,7 @@ document.getElementById('set-password-form').addEventListener('submit', async (e
     }
 
     try {
-        const response = await fetch('/api/password_reset/confirm/', {
+        const response = await fetch('https://my-booking-room-railway-production.up.railway.app/api/password_reset/confirm/', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
