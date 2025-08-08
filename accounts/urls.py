@@ -1,4 +1,5 @@
 from django.urls import path, include
+from . import views
 from .views import (
     ProfileDetail, request_password_reset,
     verify_reset_code, reset_password_with_code, debug_profile,
@@ -14,7 +15,11 @@ from .views import (
     ReportReplyView
 )
 
+
+
+
 urlpatterns = [
+    path('auth/registration/', views.register_user, name='register'),
     path('auth/', include('dj_rest_auth.urls')),           # login/logout/password reset
     path('profile/', ProfileDetail.as_view(), name='profile-detail'),
     
