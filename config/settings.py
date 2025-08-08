@@ -16,6 +16,7 @@ ALLOWED_HOSTS = [
     'localhost',
     '127.0.0.1',
 ]
+
 # INSTALLED APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
@@ -83,7 +84,6 @@ REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'accounts.serializers.CustomRegisterSerializer',
 }
 
-
 # CORS
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
@@ -128,7 +128,7 @@ TEMPLATES = [
 # Database
 DATABASES = {
     'default': dj_database_url.config(
-        default='mysql://root:Soklin0976193630@127.0.0.1:3306/booking_room_db',
+        default=os.getenv('MYSQL_URL'),  # Use Railway provided MySQL URL environment variable
         conn_max_age=600,
         ssl_require=False
     )
@@ -160,8 +160,6 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 SITE_ID = 1
 
-
-
 LOGGING = {
     'version': 1,
     'disable_existing_loggers': False,
@@ -175,4 +173,3 @@ LOGGING = {
         'level': 'ERROR',
     },
 }
-
