@@ -19,7 +19,7 @@ from .views import (
 
 
 urlpatterns = [
-    path('auth/registration/', views.register_user, name='register'),
+
     path('auth/', include('dj_rest_auth.urls')),           # login/logout/password reset
     path('profile/', ProfileDetail.as_view(), name='profile-detail'),
     
