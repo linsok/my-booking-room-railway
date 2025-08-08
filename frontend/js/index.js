@@ -62,13 +62,22 @@ document.addEventListener('DOMContentLoaded', function () {
     showPanel('login-form');
   });
 
+  // Utility function to show error messages (implement this as needed in your UI)
+  function showError(message) {
+    alert(message); // Simple alert for now; you can customize this
+  }
+
+  function showSuccess(message) {
+    alert(message);
+  }
+
   // --- Login form ---
   loginForm.addEventListener('submit', function(e) {
     e.preventDefault();
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    fetch('http://localhost:8000/auth/login/', {
+    fetch('/auth/login/', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
@@ -80,7 +89,7 @@ document.addEventListener('DOMContentLoaded', function () {
     .then(data => {
       if (data.key) {
         localStorage.setItem('authToken', data.key);
-        fetch('http://localhost:8000/api/profile/', {
+        fetch('/api/profile/', {
           headers: { 'Authorization': 'Token ' + data.key }
         })
         .then(res => res.json())
@@ -128,7 +137,7 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
       }
 
-      fetch('http://localhost:8000/auth/registration/', {
+      fetch('/auth/registration/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -165,7 +174,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
   }
 
-  // --- Forgot password: send reset code (your existing forgot password form) ---
+  // --- Forgot password: send reset code ---
   forgotPasswordForm.querySelector('form').addEventListener('submit', async function (e) {
     e.preventDefault();
     const email = document.getElementById('reset-contact').value;
@@ -175,7 +184,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const msgDiv = document.getElementById('reset-code-message');
     msgDiv.innerText = ""; // clear
     try {
-      const response = await fetch('http://localhost:8000/api/password_reset/', {
+      const response = await fetch('/api/password_reset/', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -204,7 +213,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     try {
-      const resp = await fetch("http://localhost:8000/api/password_reset/", {
+      const resp = await fetch("/api/password_reset/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
@@ -228,7 +237,7 @@ document.addEventListener('DOMContentLoaded', function () {
     const setPasswordToken = document.getElementById('set-password-token');
     const msgDiv = document.getElementById('reset-code-message');
     try {
-      const resp = await fetch("http://localhost:8000/api/password_reset/validate_token/", {
+      const resp = await fetch("/api/password_reset/validate_token/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, token })
@@ -261,7 +270,7 @@ document.addEventListener('DOMContentLoaded', function () {
       return;
     }
     try {
-      const resp = await fetch("http://localhost:8000/api/password_reset/confirm/", {
+      const resp = await fetch("/api/password_reset/confirm/", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, token, password })
@@ -276,8 +285,6 @@ document.addEventListener('DOMContentLoaded', function () {
       msgDiv.innerText = "Network error.";
     }
   };
-
-
 
   // --- Real-time validation for signup fields ---
   const fields = [
@@ -354,7 +361,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (hasError) return;
 
-    showInfo("Ready for real registration AJAX call!");
+    showSuccess("Ready for real registration AJAX call!");
   });
 
   // --- Show login by default ---

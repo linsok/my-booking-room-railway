@@ -11,51 +11,20 @@ https://docs.djangoproject.com/en/5.2/ref/settings/
 """
 
 from pathlib import Path
+import os
 
-# Build paths inside the project like this: BASE_DIR / 'subdir'.
+# BASE_DIR as Path object (recommended)
 BASE_DIR = Path(__file__).resolve().parent.parent
 
+ON_PYTHONANYWHERE = os.environ.get('PYTHONANYWHERE_DOMAIN') is not None
 
 # Quick-start development settings - unsuitable for production
-# See https://docs.djangoproject.com/en/5.2/howto/deployment/checklist/
-
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'django-insecure-kij2b*9ew7yq$v&jhwa%^kh%kqcul&$jlm6fv3-6csq!qc2t0r'
-
-# SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-# CORS settings
-CORS_ALLOW_ALL_ORIGINS = False  # Disable this when using specific origins
-CORS_ALLOW_CREDENTIALS = True
-
-# Allow specific origins for development
-CORS_ALLOWED_ORIGINS = [
-    "http://127.0.0.1:5501",  # Your frontend server (Live Server)
-    "http://localhost:5501",   # Alternative frontend URL
-    "http://127.0.0.1:8000",   # Django development server
-    "http://localhost:8000",   # Alternative Django URL
-]
-
-# Required for credentials (cookies, HTTP authentication)
-CORS_ALLOW_HEADERS = [
-    'accept',
-    'accept-encoding',
-    'authorization',
-    'content-type',
-    'dnt',
-    'origin',
-    'user-agent',
-    'x-csrftoken',
-    'x-requested-with',
-]
-
-# Allow all hosts for development
 ALLOWED_HOSTS = ['*']
 
-
 # Application definition
-
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.sites',
@@ -76,10 +45,9 @@ INSTALLED_APPS = [
     'django_rest_passwordreset',
 ]
 
-
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'corsheaders.middleware.CorsMiddleware',  # Add this line - must be before CommonMiddleware
+    'corsheaders.middleware.CorsMiddleware',  # Must be before CommonMiddleware
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
@@ -94,16 +62,16 @@ AUTHENTICATION_BACKENDS = (
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-
 ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None
 ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = None
 
+ACCOUNT_USERNAME_REQUIRED = True
 ACCOUNT_EMAIL_REQUIRED = True
 ACCOUNT_EMAIL_VERIFICATION = "none"  # users must confirm email
-ACCOUNT_AUTHENTICATION_METHOD = "email"   # or "username_email"
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True       # user is activated as soon as they click the email link
+ACCOUNT_AUTHENTICATION_METHOD = "username_email"   # or "username_email"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = True
 
-REST_USE_JWT = False  # or True if using JWT, but not required for email confirm
+REST_USE_JWT = False
 DJANGO_REST_AUTH_REGISTER_SERIALIZERS = {
     'REGISTER_SERIALIZER': 'dj_rest_auth.registration.serializers.RegisterSerializer',
 }
@@ -118,10 +86,24 @@ REST_FRAMEWORK = {
     ]
 }
 
-
+CORS_ALLOWED_ORIGINS = [
+    "https://lin23.pythonanywhere.com",
+    "http://127.0.0.1:5501",
+]
 CORS_ALLOW_ALL_ORIGINS = True
+CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOW_HEADERS = [
+    'accept',
+    'accept-encoding',
+    'authorization',
+    'content-type',
+    'dnt',
+    'origin',
+    'user-agent',
+    'x-csrftoken',
+    'x-requested-with',
+]
 
-# Custom redirect URLs
 LOGIN_REDIRECT_URL = '/frontend/home.html'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/frontend/index.html'
 
@@ -132,21 +114,24 @@ EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'rupproombooking@gmail.com'
 EMAIL_HOST_PASSWORD = 'fhee omfo cwng bhys'
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-EXPIRED_ACCOUNT_EMAIL_DAYS = 3  # Days after which an unverified account email will be deleted
+
+EXPIRED_ACCOUNT_EMAIL_DAYS = 3
 
 ROOT_URLCONF = 'config.urls'
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
+# --- TEMPLATES setting fixed: single list with one dict ---
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        "DIRS": [BASE_DIR / 'templates', BASE_DIR / 'frontend'],  
+        # Include both your main templates and frontend HTML folders here:
+        'DIRS': [BASE_DIR / 'templates', BASE_DIR / 'frontend'],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
+                'django.template.context_processors.debug',  # helpful for development errors
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
@@ -155,32 +140,32 @@ TEMPLATES = [
     },
 ]
 
-
 STATIC_URL = '/static/'
 
+# Add your static folders, e.g. your static files folder (js, css, img inside 'frontend')
 STATICFILES_DIRS = [
     BASE_DIR / 'frontend',
 ]
 
-WSGI_APPLICATION = 'config.wsgi.application'
+STATIC_ROOT = BASE_DIR / 'staticfiles'  # For collecting static files in production (optional)
 
-# Database
-# https://docs.djangoproject.com/en/5.2/ref/settings/#databases
+
+WSGI_APPLICATION = 'config.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'book_db',       # name of your database
-        'USER': 'myuser',            # your postgres user
-        'PASSWORD': 'mysecurepassword', # the password you set
-        'HOST': 'localhost',
-        'PORT': '5432',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'booking_room_db',        # Replace with your MySQL DB name
+        'USER': 'root',                   # Replace with your MySQL username
+        'PASSWORD': 'Soklin0976193630',      # Replace with your MySQL password
+        'HOST': '127.0.0.1',              # Localhost IP (don't use 'localhost' to avoid socket issues)
+        'PORT': '3306',                   # Default MySQL port
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
     }
 }
 
-
-# Password validation
-# https://docs.djangoproject.com/en/5.2/ref/settings/#auth-password-validators
 
 AUTH_PASSWORD_VALIDATORS = [
     {
@@ -197,29 +182,11 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-
-# Internationalization
-# https://docs.djangoproject.com/en/5.2/topics/i18n/
-
 LANGUAGE_CODE = 'en-us'
-
 TIME_ZONE = 'UTC'
-
 USE_I18N = True
-
 USE_TZ = True
-
-
-# Static files (CSS, JavaScript, Images)
-# https://docs.djangoproject.com/en/5.2/howto/static-files/
-
-STATIC_URL = 'static/'
-
-# Default primary key field type
-# https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
-
-
