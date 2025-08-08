@@ -65,3 +65,13 @@ coverage.xml
 *.cover
 .hypothesis/
 .pytest_cache/
+
+
+
+
+*.pyc
+*.pyo
+*.pyd
+*.db
+/media
+/staticfiles

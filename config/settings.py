@@ -15,11 +15,12 @@ import os
 
 import os
 from dotenv import load_dotenv
-load_dotenv()
 
-GOOGLE_CLIENT_ID = os.getenv('GOOGLE_CLIENT_ID')
-GOOGLE_CLIENT_SECRET = os.getenv('GOOGLE_CLIENT_SECRET')
-AZURE_TOKEN = os.getenv('AZURE_TOKEN')
+load_dotenv()  # take variables from .env
+
+GOOGLE_CLIENT_ID = os.getenv("GOOGLE_CLIENT_ID")
+GOOGLE_CLIENT_SECRET = os.getenv("GOOGLE_CLIENT_SECRET")
+AZURE_TOKEN = os.getenv("AZURE_TOKEN")
 
 
 # BASE_DIR as Path object (recommended)
