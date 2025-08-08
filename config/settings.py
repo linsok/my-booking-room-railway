@@ -8,7 +8,7 @@ load_dotenv()  # Load environment variables from .env locally
 BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY SETTINGS
-SECRET_KEY = os.getenv('SECRET_KEY', '1#4f4ks1=%ki871y^9=i(u5ll@y20#b$!3x84ac)-es&8o^gj*')
+SECRET_KEY = os.getenv('SECRET_KEY', 'ikeaum(p!350=r=5bd1s%w%c@pef6hm9vy-!x-0(h6t!bk6a(4')
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 ALLOWED_HOSTS = [
