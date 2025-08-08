@@ -9,10 +9,8 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY SETTINGS
 SECRET_KEY = os.getenv('SECRET_KEY', '1#4f4ks1=%ki871y^9=i(u5ll@y20#b$!3x84ac)-es&8o^gj*')
-
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-# ALLOWED HOSTS - specify your Railway domain and local hosts
 ALLOWED_HOSTS = [
     'my-booking-room-railway-production.up.railway.app',
     'localhost',
@@ -45,37 +43,34 @@ INSTALLED_APPS = [
 # MIDDLEWARE
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware',  # For static files
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'corsheaders.middleware.CorsMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'allauth.account.middleware.AccountMiddleware',  # <- add this back
+    'allauth.account.middleware.AccountMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
 ]
-
 
 AUTHENTICATION_BACKENDS = (
     'django.contrib.auth.backends.ModelBackend',
     'allauth.account.auth_backends.AuthenticationBackend',
 )
 
-# Allauth settings
-ACCOUNT_EMAIL_CONFIRMATION_AUTHENTICATED_REDIRECT_URL = None
-ACCOUNT_EMAIL_CONFIRMATION_ANONYMOUS_REDIRECT_URL = None
-ACCOUNT_USERNAME_REQUIRED = True
+# Allauth / dj-rest-auth settings
+ACCOUNT_USERNAME_REQUIRED = False
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = "none"
-ACCOUNT_AUTHENTICATION_METHOD = "username_email"
-ACCOUNT_CONFIRM_EMAIL_ON_GET = True
+ACCOUNT_EMAIL_VERIFICATION = "none"  # Disable email confirmation for now
+ACCOUNT_AUTHENTICATION_METHOD = "email"
+ACCOUNT_CONFIRM_EMAIL_ON_GET = False
 
-# REST Framework settings
+# Force console backend in production until real email is ready
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# REST Framework
 REST_USE_JWT = False
-DJANGO_REST_AUTH_REGISTER_SERIALIZERS = {
-    'REGISTER_SERIALIZER': 'dj_rest_auth.registration.serializers.RegisterSerializer',
-}
 REST_AUTH = {
     'USER_DETAILS_SERIALIZER': 'accounts.custom_serializers.CustomUserDetailsSerializer',
 }
@@ -85,7 +80,7 @@ REST_FRAMEWORK = {
     ]
 }
 
-# CORS settings
+# CORS
 CORS_ALLOW_ALL_ORIGINS = True
 CORS_ALLOW_CREDENTIALS = True
 CORS_ALLOW_HEADERS = [
@@ -103,20 +98,9 @@ CORS_ALLOW_HEADERS = [
 LOGIN_REDIRECT_URL = '/frontend/home.html'
 ACCOUNT_LOGOUT_REDIRECT_URL = '/frontend/index.html'
 
-# Email settings, reading password & user from env variables
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.getenv('EMAIL_HOST_USER', 'rupproombooking@gmail.com')
-EMAIL_HOST_PASSWORD = os.getenv('EMAIL_HOST_PASSWORD', 'your_email_password_here')
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-
-EXPIRED_ACCOUNT_EMAIL_DAYS = 3
-
 ROOT_URLCONF = 'config.urls'
 
-# Media files
+# Media
 MEDIA_URL = '/media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
@@ -137,7 +121,7 @@ TEMPLATES = [
     },
 ]
 
-# DATABASE - use Railway's DATABASE_URL or fallback to your local MySQL
+# Database
 DATABASES = {
     'default': dj_database_url.config(
         default='mysql://root:Soklin0976193630@127.0.0.1:3306/booking_room_db',
@@ -146,30 +130,28 @@ DATABASES = {
     )
 }
 
-# Password validators
+# Password validation
 AUTH_PASSWORD_VALIDATORS = [
-    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',},
-    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',},
+    {'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator'},
+    {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
 # Localization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'Asia/Phnom_Penh'  # changed to Cambodia timezone
+TIME_ZONE = 'Asia/Phnom_Penh'
 USE_I18N = True
 USE_TZ = True
 
-# Static files (CSS, JS, Images)
+# Static files
 STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For collectstatic in production
-
-STATICFILES_DIRS = [BASE_DIR / 'static']  # if using a `static` folder in your project root
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
+STATICFILES_DIRS = [BASE_DIR / 'static']
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
-# WSGI app
+# WSGI
 WSGI_APPLICATION = 'config.wsgi.application'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
 SITE_ID = 1
