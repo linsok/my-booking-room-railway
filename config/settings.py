@@ -158,9 +158,8 @@ USE_TZ = True
 # Static files (CSS, JS, Images)
 STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # For collectstatic in production
-STATICFILES_DIRS = [
-    BASE_DIR / 'frontend',
-]
+
+STATICFILES_DIRS = [BASE_DIR / 'static']  # if using a `static` folder in your project root
 STATICFILES_STORAGE = 'whitenoise.storage.CompressedManifestStaticFilesStorage'
 
 # WSGI app
@@ -169,3 +168,5 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
+
+
