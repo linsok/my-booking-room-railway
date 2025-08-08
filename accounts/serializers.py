@@ -221,3 +221,13 @@ class NotificationSettingsSerializer(serializers.ModelSerializer):
         if request and request.user.is_authenticated:
             validated_data['user'] = request.user
         return super().create(validated_data)
+
+from dj_rest_auth.registration.serializers import RegisterSerializer
+
+class CustomRegisterSerializer(RegisterSerializer):
+    username = None  # remove username field
+
+    def get_cleaned_data(self):
+        data = super().get_cleaned_data()
+        data.pop('username', None)
+        return data
