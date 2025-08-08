@@ -57,5 +57,5 @@ urlpatterns = [
     path('', TemplateView.as_view(template_name='index.html'), name='root'),
     
     # Frontend static files (CSS, JS, images)
-    re_path(r'^frontend/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'frontend'}),
+    #re_path(r'^frontend/(?P<path>.*)$', serve, {'document_root': settings.BASE_DIR / 'frontend'}),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
