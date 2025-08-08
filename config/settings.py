@@ -12,13 +12,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', '1#4f4ks1=%ki871y^9=i(u5ll@y20#b$!3x84ac)-e
 
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
-# ALLOWED HOSTS - adjust this in production for security
+# ALLOWED HOSTS - specify your Railway domain and local hosts
 ALLOWED_HOSTS = [
     'my-booking-room-railway-production.up.railway.app',
     'localhost',
     '127.0.0.1',
 ]
-
 
 # INSTALLED APPS
 INSTALLED_APPS = [
@@ -54,7 +53,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'allauth.account.middleware.AccountMiddleware',
 ]
 
 AUTHENTICATION_BACKENDS = (
@@ -156,7 +154,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 # Localization
 LANGUAGE_CODE = 'en-us'
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Asia/Phnom_Penh'  # changed to Cambodia timezone
 USE_I18N = True
 USE_TZ = True
 
@@ -173,5 +171,3 @@ WSGI_APPLICATION = 'config.wsgi.application'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 SITE_ID = 1
-
-
