@@ -1497,3 +1497,18 @@ def bookings_by_week(request, week_start_str):
     bookings = Booking.objects.filter(booking_date__gte=week_start, booking_date__lte=week_end)
     serializer = BookingSerializer(bookings, many=True)
     return Response(serializer.data)
+
+
+
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
+
+@csrf_exempt
+def register_user(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        # Do validation here...
+        return JsonResponse({"message": "User registered successfully"})
+    return JsonResponse({"error": "Invalid method"}, status=405)
+
