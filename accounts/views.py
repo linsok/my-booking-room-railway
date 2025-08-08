@@ -1504,11 +1504,5 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 import json
 
-@csrf_exempt
-def register_user(request):
-    if request.method == 'POST':
-        data = json.loads(request.body)
-        # Do validation here...
-        return JsonResponse({"message": "User registered successfully"})
-    return JsonResponse({"error": "Invalid method"}, status=405)
+
 
