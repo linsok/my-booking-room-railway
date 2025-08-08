@@ -16,27 +16,25 @@ Including another URLconf
 """
 from django.conf import settings
 from django.contrib import admin
-from django.urls import path, include
-from accounts import views
-from django.conf import settings
-from django.conf import settings
-from django.conf.urls.static import static
+from django.urls import path, include, re_path
 from django.views.generic import TemplateView
 from django.views.static import serve
-from django.urls import re_path
-from . import views
-
-
+from django.conf.urls.static import static
 
 
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('auth/', include('dj_rest_auth.urls')),            # login/logout only
-    path('auth/registration/', include('dj_rest_auth.registration.urls')),  # registration
-    path('api/', include('accounts.urls')),  # Custom API endpoints
+
+    # Auth endpoints
+    path('auth/', include('dj_rest_auth.urls')),
+    path('auth/registration/', include('dj_rest_auth.registration.urls')),
+    path('auth/custom/', include('authentication.urls')),  # Changed to avoid conflict
+
+    # API endpoints
+    path('api/accounts/', include('accounts.urls')),        # Changed prefix to avoid conflict
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
-    
+    path('api/', include('api.urls')),
     # Frontend HTML files
     path('frontend/home.html', TemplateView.as_view(template_name='home.html'), name='home'),
     path('frontend/index.html', TemplateView.as_view(template_name='index.html'), name='index'),
