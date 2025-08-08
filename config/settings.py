@@ -9,9 +9,13 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY SETTINGS
 SECRET_KEY = os.getenv('SECRET_KEY', '1#4f4ks1=%ki871y^9=i(u5ll@y20#b$!3x84ac)-es&8o^gj*')
-DEBUG = True
-ALLOWED_HOSTS = ['*']
+DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
+ALLOWED_HOSTS = [
+    'my-booking-room-railway-production.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+]
 # INSTALLED APPS
 INSTALLED_APPS = [
     'django.contrib.admin',
