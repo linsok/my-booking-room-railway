@@ -1,4 +1,6 @@
 document.addEventListener('DOMContentLoaded', function () {
+  const BASE_API_URL = 'https://my-booking-room-railway-production.up.railway.app';
+
   // --- Panels ---
   const loginForm = document.getElementById('login-form');
   const signupForm = document.getElementById('signup-form');
@@ -77,42 +79,46 @@ document.addEventListener('DOMContentLoaded', function () {
     const username = document.getElementById('login-username').value;
     const password = document.getElementById('login-password').value;
 
-    fetch('/auth/login/', {
+    fetch(`${BASE_API_URL}/auth/login/`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        email: username,
+        username: username,  // changed from email to username
         password: password
       })
     })
-    .then(res => res.json())
+    .then(res => {
+      if (!res.ok) throw new Error(`Login failed with status ${res.status}`);
+      return res.json();
+    })
     .then(data => {
       if (data.key) {
         localStorage.setItem('authToken', data.key);
-        fetch('/api/profile/', {
+        return fetch(`${BASE_API_URL}/api/accounts/profile/`, {
           headers: { 'Authorization': 'Token ' + data.key }
-        })
-        .then(res => res.json())
-        .then(profile => {
-          if (profile.is_staff || profile.is_superuser) {
-            window.location.href = "admin_dashboard.html";
-          } else {
-            window.location.href = "home.html";
-          }
         });
-      } else if (data.non_field_errors) {
-        showError('Login failed: ' + data.non_field_errors.join(' '));
       } else {
-        showError('Login failed: ' + JSON.stringify(data));
+        throw new Error('Login response missing auth key');
+      }
+    })
+    .then(res => {
+      if (!res.ok) throw new Error(`Profile fetch failed with status ${res.status}`);
+      return res.json();
+    })
+    .then(profile => {
+      if (profile.is_staff || profile.is_superuser) {
+        window.location.href = "admin_dashboard.html";
+      } else {
+        window.location.href = "home.html";
       }
     })
     .catch(err => {
-      showError('Network error: Could not reach the server. Please try again later.');
+      showError('Login error: ' + err.message);
     });
   });
 
   // --- Signup form ---
-const signupFormEl = document.querySelector('#signup-form form');
+  const signupFormEl = document.querySelector('#signup-form form');
   if (signupFormEl) {
     signupFormEl.addEventListener('submit', function(e) {
       e.preventDefault();
@@ -137,7 +143,7 @@ const signupFormEl = document.querySelector('#signup-form form');
         return;
       }
 
-      fetch('/auth/registration/', {
+      fetch(`${BASE_API_URL}/auth/registration/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -173,6 +179,7 @@ const signupFormEl = document.querySelector('#signup-form form');
       });
     });
   }
+
   // --- Forgot password: send reset code ---
   forgotPasswordForm.querySelector('form').addEventListener('submit', async function (e) {
     e.preventDefault();
@@ -183,7 +190,7 @@ const signupFormEl = document.querySelector('#signup-form form');
     const msgDiv = document.getElementById('reset-code-message');
     msgDiv.innerText = ""; // clear
     try {
-      const response = await fetch('/api/password_reset/', {
+      const response = await fetch(`${BASE_API_URL}/api/password_reset/`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email })
@@ -212,7 +219,7 @@ const signupFormEl = document.querySelector('#signup-form form');
       return;
     }
     try {
-      const resp = await fetch("/api/password_reset/", {
+      const resp = await fetch(`${BASE_API_URL}/api/password_reset/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email })
@@ -236,7 +243,7 @@ const signupFormEl = document.querySelector('#signup-form form');
     const setPasswordToken = document.getElementById('set-password-token');
     const msgDiv = document.getElementById('reset-code-message');
     try {
-      const resp = await fetch("/api/password_reset/validate_token/", {
+      const resp = await fetch(`${BASE_API_URL}/api/password_reset/validate_token/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, token })
@@ -269,7 +276,7 @@ const signupFormEl = document.querySelector('#signup-form form');
       return;
     }
     try {
-      const resp = await fetch("/api/password_reset/confirm/", {
+      const resp = await fetch(`${BASE_API_URL}/api/password_reset/confirm/`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ email, token, password })
