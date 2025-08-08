@@ -16,24 +16,25 @@ function getCookie(name) {
 const csrftoken = getCookie('csrftoken');
 
 // Toggle forms
-document.getElementById('showSignup').addEventListener('click', () => {
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('signupForm').classList.remove('hidden');
+document.getElementById('show-signup').addEventListener('click', () => {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('signup-form').classList.remove('hidden');
 });
-document.getElementById('showLogin').addEventListener('click', () => {
-    document.getElementById('signupForm').classList.add('hidden');
-    document.getElementById('loginForm').classList.remove('hidden');
+document.getElementById('show-login').addEventListener('click', () => {
+    document.getElementById('signup-form').classList.add('hidden');
+    document.getElementById('forgot-password-form').classList.add('hidden');
+    document.getElementById('login-form').classList.remove('hidden');
 });
-document.getElementById('showForgotPassword').addEventListener('click', () => {
-    document.getElementById('loginForm').classList.add('hidden');
-    document.getElementById('forgotPasswordForm').classList.remove('hidden');
+document.getElementById('show-forgot').addEventListener('click', () => {
+    document.getElementById('login-form').classList.add('hidden');
+    document.getElementById('forgot-password-form').classList.remove('hidden');
 });
 
-// Login
-document.getElementById('loginForm').addEventListener('submit', async (e) => {
+// Login form submit
+document.getElementById('login-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('loginEmail').value;
-    const password = document.getElementById('loginPassword').value;
+    const email = document.getElementById('login-username').value;
+    const password = document.getElementById('login-password').value;
 
     try {
         const response = await fetch('/auth/login/', {
@@ -51,21 +52,21 @@ document.getElementById('loginForm').addEventListener('submit', async (e) => {
 
         const data = await response.json();
         alert('Login successful');
-        // Redirect or save token if needed
+        // TODO: Redirect or save token here
     } catch (error) {
         console.error('Login error:', error);
         alert('Login failed');
     }
 });
 
-// Signup
-document.getElementById('signupForm').addEventListener('submit', async (e) => {
+// Signup form submit
+document.getElementById('signup-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const name = document.getElementById('signupName').value;
-    const email = document.getElementById('signupEmail').value;
-    const password = document.getElementById('signupPassword').value;
-    const confirmPassword = document.getElementById('signupConfirmPassword').value;
-    const phone = document.getElementById('signupPhone').value;
+    const name = document.getElementById('signup-username').value;
+    const email = document.getElementById('signup-email').value;
+    const password = document.getElementById('signup-password').value;
+    const confirmPassword = document.getElementById('signup-password2').value;
+    const phone = document.getElementById('phone').value;
 
     if (password !== confirmPassword) {
         alert('Passwords do not match');
@@ -95,9 +96,9 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
 
         const data = await response.json();
         alert('Signup successful');
-        document.getElementById('signupForm').reset();
-        document.getElementById('signupForm').classList.add('hidden');
-        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('signup-form').reset();
+        document.getElementById('signup-form').classList.add('hidden');
+        document.getElementById('login-form').classList.remove('hidden');
     } catch (error) {
         console.error('Signup error:', error);
         alert('Signup failed');
@@ -105,9 +106,9 @@ document.getElementById('signupForm').addEventListener('submit', async (e) => {
 });
 
 // Forgot Password Step 1
-document.getElementById('forgotPasswordForm').addEventListener('submit', async (e) => {
+document.getElementById('forgot-password-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const email = document.getElementById('forgotEmail').value;
+    const email = document.getElementById('reset-contact').value;
 
     try {
         const response = await fetch('/api/password_reset/', {
@@ -124,8 +125,8 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async (
         }
 
         alert('Reset code sent to email');
-        document.getElementById('forgotPasswordForm').classList.add('hidden');
-        document.getElementById('resetCodeForm').classList.remove('hidden');
+        document.getElementById('forgot-password-form').classList.add('hidden');
+        document.getElementById('reset-code-container').classList.remove('hidden');
     } catch (error) {
         console.error('Reset request error:', error);
         alert('Error sending reset code');
@@ -133,9 +134,9 @@ document.getElementById('forgotPasswordForm').addEventListener('submit', async (
 });
 
 // Forgot Password Step 2 (Verify code)
-document.getElementById('resetCodeForm').addEventListener('submit', async (e) => {
+document.getElementById('reset-code-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const code = document.getElementById('resetCode').value;
+    const code = document.getElementById('reset-code-input').value;
 
     try {
         const response = await fetch('/api/password_reset/validate_token/', {
@@ -152,8 +153,13 @@ document.getElementById('resetCodeForm').addEventListener('submit', async (e) =>
         }
 
         alert('Code verified. You can now set a new password.');
-        document.getElementById('resetCodeForm').classList.add('hidden');
-        document.getElementById('newPasswordForm').classList.remove('hidden');
+        document.getElementById('reset-code-container').classList.add('hidden');
+        document.getElementById('set-password-container').classList.remove('hidden');
+
+        // Store email for setting password
+        document.getElementById('reset-code-email').value = document.getElementById('reset-contact').value;
+        document.getElementById('set-password-email').value = document.getElementById('reset-contact').value;
+        document.getElementById('set-password-token').value = code;
     } catch (error) {
         console.error('Code validation error:', error);
         alert('Invalid or expired code');
@@ -161,11 +167,11 @@ document.getElementById('resetCodeForm').addEventListener('submit', async (e) =>
 });
 
 // Forgot Password Step 3 (Set new password)
-document.getElementById('newPasswordForm').addEventListener('submit', async (e) => {
+document.getElementById('set-password-form').addEventListener('submit', async (e) => {
     e.preventDefault();
-    const newPassword = document.getElementById('newPassword').value;
-    const confirmNewPassword = document.getElementById('confirmNewPassword').value;
-    const token = document.getElementById('resetCode').value;
+    const newPassword = document.getElementById('set-password-input').value;
+    const confirmNewPassword = document.getElementById('set-password-confirm-input').value;
+    const token = document.getElementById('set-password-token').value;
 
     if (newPassword !== confirmNewPassword) {
         alert('Passwords do not match');
@@ -187,9 +193,9 @@ document.getElementById('newPasswordForm').addEventListener('submit', async (e) 
         }
 
         alert('Password reset successful');
-        document.getElementById('newPasswordForm').reset();
-        document.getElementById('newPasswordForm').classList.add('hidden');
-        document.getElementById('loginForm').classList.remove('hidden');
+        document.getElementById('set-password-form').reset();
+        document.getElementById('set-password-container').classList.add('hidden');
+        document.getElementById('login-form').classList.remove('hidden');
     } catch (error) {
         console.error('Password reset error:', error);
         alert('Password reset failed');
