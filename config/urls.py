@@ -33,7 +33,6 @@ from . import views
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('auth/', include('dj_rest_auth.urls')),            # login/logout only
-    path('auth/registration/', views.register_user, name='register'),
     path('auth/registration/', include('dj_rest_auth.registration.urls')),  # registration
     path('api/', include('accounts.urls')),  # Custom API endpoints
     path('api/password_reset/', include('django_rest_passwordreset.urls', namespace='password_reset')),
