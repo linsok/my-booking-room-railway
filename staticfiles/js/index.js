@@ -112,49 +112,67 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   // --- Signup form ---
-const username = document.getElementById('signup-username').value;
-const email = document.getElementById('signup-email').value;
-const password = document.getElementById('signup-password').value;
-const confirmPassword = document.getElementById('signup-password2').value;
+const signupFormEl = document.querySelector('#signup-form form');
+  if (signupFormEl) {
+    signupFormEl.addEventListener('submit', function(e) {
+      e.preventDefault();
+      const errorDiv = document.getElementById('signup-error');
+      errorDiv.style.display = "none";
+      errorDiv.innerText = "";
 
-if (password !== confirmPassword) {
-    alert('Passwords do not match');
-    return;
-}
+      const phone = document.getElementById('phone').value.trim();
+      const username = document.getElementById('signup-username').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const password = document.getElementById('signup-password').value;
+      const password2 = document.getElementById('signup-password2').value;
 
-try {
-    const response = await fetch('https://my-booking-room-railway-production.up.railway.app/auth/registration/', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'X-CSRFToken': csrftoken
-        },
-        body: JSON.stringify({
-            username,      // send username properly
-            email,
-            password1: password,
-            password2: confirmPassword
-        })
-    });
-
-    if (!response.ok) {
-        const errorData = await response.json();
-        console.error('Signup error:', errorData);
-        alert('Signup failed: ' + JSON.stringify(errorData));
+      if (!username || !email || !password || !password2) {
+        errorDiv.innerText = "Please fill in all required fields.";
+        errorDiv.style.display = "block";
         return;
-    }
+      }
+      if (password !== password2) {
+        errorDiv.innerText = "Passwords do not match.";
+        errorDiv.style.display = "block";
+        return;
+      }
 
-    const data = await response.json();
-    alert('Signup successful');
-    document.getElementById('signup-form').reset();
-    document.getElementById('signup-form').classList.add('hidden');
-    document.getElementById('login-form').classList.remove('hidden');
-} catch (error) {
-    console.error('Signup error:', error);
-    alert('Signup failed');
-}
-
-
+      fetch('/auth/registration/', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          username: username,
+          email: email,
+          password1: password,
+          password2: password2
+        })
+      })
+      .then(async res => {
+        const data = await res.json();
+        if (res.ok || data.key) {
+          signupFormEl.reset();
+          showPanel('login-form');
+          showSuccess('Account created! You can now log in.');
+        } else if (data.username && Array.isArray(data.username)) {
+          errorDiv.innerText = data.username[0];
+          errorDiv.style.display = "block";
+        } else if (data.email && Array.isArray(data.email)) {
+          errorDiv.innerText = data.email[0];
+          errorDiv.style.display = "block";
+        } else if (data.non_field_errors && Array.isArray(data.non_field_errors)) {
+          errorDiv.innerText = data.non_field_errors[0];
+          errorDiv.style.display = "block";
+        } else {
+          errorDiv.innerText = "Registration failed: " + JSON.stringify(data);
+          errorDiv.style.display = "block";
+        }
+      })
+      .catch(err => {
+        errorDiv.innerText = "Network error: " + err;
+        errorDiv.style.display = "block";
+      });
+    });
+  }
   // --- Forgot password: send reset code ---
   forgotPasswordForm.querySelector('form').addEventListener('submit', async function (e) {
     e.preventDefault();
