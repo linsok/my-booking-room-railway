@@ -13,7 +13,12 @@ SECRET_KEY = os.getenv('SECRET_KEY', '1#4f4ks1=%ki871y^9=i(u5ll@y20#b$!3x84ac)-e
 DEBUG = os.getenv('DEBUG', 'True').lower() in ('true', '1', 'yes')
 
 # ALLOWED HOSTS - adjust this in production for security
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = [
+    'my-booking-room-railway-production.up.railway.app',
+    'localhost',
+    '127.0.0.1',
+]
+
 
 # INSTALLED APPS
 INSTALLED_APPS = [
